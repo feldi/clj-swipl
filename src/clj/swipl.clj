@@ -12,7 +12,7 @@
 ; get and install the leiningen plugin 'localrepo',
 ; then do: lein localrepo install 'path-to-swi-prolog'/lib/jpl.jar jpl 3.1.4-alpha
 
-#_(set! *warn-on-reflection* true)
+(set! *warn-on-reflection* true)
 
 (declare get-pl-term-value)
 
@@ -255,12 +255,19 @@
   (.toString q))
 
 (defn run-query-from-source
+  "Ad hoc query. Runs only first solution."
   [^String source]
   (into {} (Query/oneSolution source))) 
 
 (defn run*-query-from-source
+   "Ad hoc query. Runs all solution."
   [^String source]
   (mapv #(into {} %) (Query/allSolutions source))) 
+
+(defn run-n-query-from-source
+   "Ad hoc query. Runs given number of solutions."
+  [^String source ^long n]
+  (mapv #(into {} %) (Query/nSolutions source n))) 
 
 
 ;; Convenience methods
