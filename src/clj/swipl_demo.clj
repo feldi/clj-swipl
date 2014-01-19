@@ -29,8 +29,8 @@
 
 (defn q2b
   []
-  (let [solutions (pl/run-n-query-from-source "X is 1; X is 2; X is 3" 2)]
-     (println "q2b: first 2 solutions to previous query ==> " 
+  (let [solutions (pl/run-n-query-from-source 2 "X is 1; X is 2; X is 3")]
+     (println "q2b: only first 2 solutions to previous query ==> " 
              (map #(str "X = " (pl/get-value "X" %) "; ") solutions))
     ))
 
