@@ -187,8 +187,9 @@
 ;; Compound
 
 (defn make-compound
-  [name terms]
-  (Compound. name (into-array Term terms)))
+  ([name] )
+  ([name terms]
+  (Compound. name (into-array Term terms))))
 
 (defn ^String get-name
   [^Compound c]

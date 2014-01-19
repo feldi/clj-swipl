@@ -17,15 +17,22 @@
         atom-ralf (pl/make-atom "ralf")
         query (pl/make-query-from-terms "descendent_of" [var-x atom-ralf])
         solutions (pl/all-solutions query)]
-    (println "q1: Solutions to " (pl/show-query query)  " ==> " 
+    (println "q1: solutions to " (pl/show-query query)  " ==> " 
              (map #(str "X = " (pl/get-value var-x %) "; ") solutions))))
 
 (defn q2
   []
   (let [query (pl/make-query-from-source "X is 1; X is 2; X is 3")
         solutions (pl/all-solutions query)]
-    (println "q2: Solutions to " (pl/show-query query)  " ==> " 
+    (println "q2: solutions to " (pl/show-query query)  " ==> " 
              (map #(str "X = " (pl/get-value "X" %) "; ") solutions))))
+
+(defn q2b
+  []
+  (let [solutions (pl/run-n-query-from-source "X is 1; X is 2; X is 3" 2)]
+     (println "q2b: first 2 solutions to previous query ==> " 
+             (map #(str "X = " (pl/get-value "X" %) "; ") solutions))
+    ))
 
 (defn q3
   []
@@ -33,7 +40,7 @@
         arg2 (pl/make-integer 22)
         query-with-params (pl/make-query-with-parms "X = ?, Y = ? ", [arg1 arg2])
         solution (pl/one-solution query-with-params)]
-    (println "q3: Query with params: " (pl/show-query query-with-params) 
+    (println "q3: query with params: " (pl/show-query query-with-params) 
              " ==> X = " (pl/get-value "X" solution) 
              ", Y = " (pl/get-value "Y" solution))))
 
@@ -48,7 +55,7 @@
 (defn q5
   []
   (let [query (pl/make-query-from-source "statistics")]
-    (println "q5: Output SWI-Prolog statistics.")
+    (println "q5: output SWI-Prolog statistics.")
     (pl/one-solution query)))
 
 ;;------------------------------------------------------------------------
@@ -57,6 +64,7 @@
 
 (q1)
 (q2)
+(q2b) 
 (q3)
 (q4)
 (q5)
