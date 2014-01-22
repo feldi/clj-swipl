@@ -76,7 +76,7 @@
 
 (defn ^Term int-list-to-pl-list
   [list-of-ints]
-  (Util/intArrayToList (into-array int list-of-ints)))
+  (Util/intArrayToList (int-array list-of-ints)))
 
 (defn pl-list-to-length
   [term]
@@ -128,15 +128,19 @@
 
 ;; Variable
 
-(defn make-variable
-  ([]
-    (Variable.))
+(defn make-var
+  ([] (Variable.))
   ([^String name]
     (Variable. name)))
 
 (defn get-var-name
   [^Variable var]
   (.name var)) 
+
+(defn show-var
+  "Pretty print variable." 
+  [^Variable var]
+  (.toString var)) 
 
 ;; JRef
 
@@ -169,7 +173,7 @@
 
 ;; Term
 
-(defn show
+(defn show-term
   "Pretty print a term." 
   [^Term term]
   (.toString term))
@@ -195,10 +199,16 @@
   [^Term term]
   (.typeName term))
 
-(defn has-functor
+(defn has-functor?
   "Whether the compounds functor has name and arity."
   [^Term term ^String name  ^long arity]
   (.hasFunctor term name arity)) 
+
+; some special functors
+(def list-functor ".")
+(def and-functor ",")
+(def or-functor ";")
+(def jref-functor "@")
 
 (defn ^Term get-ith-arg
   "get the ith argument (counting from 1)." 
@@ -242,9 +252,25 @@
   [^Term term]
   (.isInteger term)) 
 
-(defn is-variable? 
+(defn is-var? 
   [^Term term]
   (.isVariable term)) 
+
+(defn is-list?
+  [term]
+  (has-functor? term list-functor 2))
+
+(defn is-and?
+  [term]
+  (has-functor? term and-functor 2))
+
+(defn is-or?
+  [term]
+  (has-functor? term or-functor 2))
+
+(defn is-jref?
+  [term]
+  (has-functor? term jref-functor 1))
 
 (defn put-params 
   [^Term term ^Term plist]
@@ -264,17 +290,23 @@
   [^Term term]
   (into [] (.toTermArray term))) 
 
+(defn- string-starts-with-upper-case
+  [^String s]
+   (Character/isUpperCase (.codePointAt s 0))) 
+
 (defn make-term 
   [x]
   (cond 
     (list? x) (seq-to-pl-list (mapv make-term x))
     (vector? x) (seq-to-pl-list (mapv make-term x)) 
+    (instance? Compound x) x
     (instance? java.lang.Integer x) (make-integer x)
     (instance? java.lang.Long x) (make-integer x)
     (instance? java.lang.Float x) (make-float x)
     (instance? java.lang.Double x) (make-float x)
-    (instance? Variable x) x
-    (instance? String x) (make-atom x)
+    (instance? String x) 
+       (if (string-starts-with-upper-case x) (make-var x) 
+                                             (make-atom x) )
     :else (make-jref x)
     ))
 
@@ -282,7 +314,7 @@
 ;; Compound
 
 (defn make-compound
-  ([name] )
+  ([name] (make-compound name [(make-empty-list)]))
   ([name terms]
   (Compound. name (into-array Term terms))))
 
