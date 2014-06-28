@@ -1,4 +1,4 @@
-% a simple database for Family.java
+% a simple database for swipl_demo.clj
 
 child_of(joe, ralf).
 child_of(mary, joe).
