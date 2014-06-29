@@ -18,25 +18,26 @@ get and install the leiningen plugin 'localrepo',then do:
 ## Usage
 
 put something like
-
+```clojure
 	(:require [clj.swipl :as pl])
-	
+```
 in your namespace declaration.
 
 
 Check the examples in 'swipl_demo.clj'.
 
 Here is one of them:
+```clojure 
+(defn demo-all-solutions
+  []
+  (let [query     (pl/make-query-from-text "X is 1; X is 2; X is 3")
+        solutions (pl/get-all-solutions query)]
+    (println "demo-all-solutions: all solutions to " (pl/show-query query)  " ==> " 
+             (map pl/show-solution solutions))))
 
-	(defn q2
-	  []
-	  (let [query (pl/make-query-from-source "X is 1; X is 2; X is 3")
-			solutions (pl/all-solutions query)]
-		(println "q2: Solutions to " (pl/show-query query)  " ==> " 
-				 (map #(str "X = " (pl/get-value "X" %) "; ") solutions))))
-				 
-	(q2)
-
+(demo-all-solutions)
+```	 
+			 
 ## License
 
 Copyright © 2014 Peter Feldtmann
